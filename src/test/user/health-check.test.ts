@@ -1,18 +1,23 @@
 import request from 'supertest';
-import app from "../../server";
+import App from "../../server";
 
-let expect: any; // Declare `expect` outside of the describe
+let expect: any;
 
+App.init();
 before(async () => {
-  const chai = await import('chai'); // Use dynamic import here
-  expect = chai.expect; // Assign `expect` from `chai`
+  const chai = await import('chai');
+  expect = chai.expect;
 });
 
 describe('Test suite #1', () => {
   it('should return hello world!', async () => {
-    const res = await request(app).get('/hc');
+    await new Promise(resolve => {
+      setTimeout(resolve, 1000);
+    });
 
-    expect(res.status).to.equal(200);
-    expect(res.body.message).to.equal("OK");
+    const res = await request(App.getApp()).post('/comments').send({ articleId: 1, nickname: "test nickname", parentCommentId: null, comment: "test comment" });
+
+    expect(res.status).to.equal(201);
+    expect(res.body.data.success).to.equal(true);
   });
 });

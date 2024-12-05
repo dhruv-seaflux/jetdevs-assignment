@@ -22,8 +22,12 @@ class App {
   private logger = Log.getLogger();
 
   constructor() {
-    // init DB.
-    DB.init({
+    this.app = express();
+  }
+
+  public async init() {
+    // Initialize database
+    await DB.init({
       type: "mysql",
       host: env.dbHost,
       port: 3307,
@@ -38,9 +42,6 @@ class App {
 
     // Validate ENV file
     EnvValidator.validate(env);
-
-    // Init Express
-    this.app = express();
 
     // Security
     Cors.enable(this.app);
@@ -57,21 +58,23 @@ class App {
 
     // Body Parsing
     this.app.use(json({ limit: "50mb" }));
-    this.app.use(urlencoded({ extended: true })); // parse application/x-www-form-urlencoded
+    this.app.use(urlencoded({ extended: true }));
 
-    // Destruct Pager from query string and typecast to numbers
+    // Destruct Pager
     this.app.use(destructPager);
 
     // Routing
     const routes = new Routes();
     this.app.use("/", routes.configure());
 
+    this.app.listen(env.port, () => {
+      this.logger.info(`The server is running on http://localhost:${env.port}`);
+    });
   }
 
-  public getExpresApp() {
+  public getApp(): express.Application {
     return this.app;
   }
-
 }
 
-export default new App().app;
+export default new App();

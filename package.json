@@ -19,7 +19,7 @@
     "test-migrate": "cd liquibase && liquibase update --defaultsFile=./liquibase-test.properties ",
     "start-db": "node test-config/start-db.js && cd liquibase && liquibase update --defaultsFile=./liquibase-test.properties",
     "stop-db": "docker-compose down",
-    "test": "mocha dist/test/**/*.test.js --timeout 1500000"
+    "test": "tsc && tsc-alias && mocha dist/test/**/*.test.js --timeout 1500000"
   },
   "engines": {
     "node": "^18.20.0"
@@ -72,14 +72,13 @@
     "@types/uuid": "^9.0.5",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
-    "chai": "^5.1.2",
-    "chai-http": "^5.1.1",
+    "chai": "^4.1.0",
     "concurrently": "^8.2.2",
     "esbuild": "^0.18.4",
     "express-fileupload": "^1.4.3",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
-    "mocha": "^11.0.1",
+    "mocha": "^10.3.0",
     "nodemon": "^3.1.4",
     "prettier": "^3.0.1",
     "rimraf": "^5.0.1",

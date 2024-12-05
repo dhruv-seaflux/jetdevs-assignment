@@ -33,7 +33,7 @@ export class CommentQueue {
   }
 
   public async addCommentToArticle(articleId: number, nickname: string, parentCommentId: number | null, comment: string) {
-    const job = await CommentQueue.gI().queue.add(ECommentJobNames.ADD_COMMENT, {
+    const job = await CommentQueue.gI().queue.add(ECommentJobNames.AddComment, {
       articleId,
       parentCommentId: parentCommentId ?? null,
       nickname,
@@ -47,7 +47,7 @@ export class CommentQueue {
   }
 
   public async replyCommentToArticle(articleId: number, nickname: string, parentCommentId: number | null, comment: string) {
-    const job = await CommentQueue.gI().queue.add(ECommentJobNames.ADD_COMMENT, {
+    const job = await CommentQueue.gI().queue.add(ECommentJobNames.AddComment, {
       articleId,
       parentCommentId,
       nickname,

@@ -1,12 +1,13 @@
 import { Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
-import { TRequest, TResponse } from "@types";
+import { ECommentJobNames, TRequest, TResponse } from "@types";
 import { BaseController } from "@modules/base.controller";
 import { InitRepository, InjectCls, InjectRepositories } from "@helpers";
 import { ArticlesEntity, CommentsEntity } from "@entities";
 import { ArticlesHelper } from "@modules/articles/helpers/articles.helper";
+import { myQueue, queueEvents } from "@configs";
 import { CommentQueue } from "./queues/comments.queue";
-import { AddArticleCommentDto, GetCommentsOnArticleDto, ReplyArticleCommentDto } from "./dto";
+import { AddArticleCommentDto, GetCommentsOnArticleDto } from "./dto";
 
 export class CommentsController extends BaseController {
   @InitRepository(ArticlesEntity)
@@ -26,14 +27,23 @@ export class CommentsController extends BaseController {
     InjectRepositories(this);
   }
 
-  public addCommentToArticle = async (req: TRequest<AddArticleCommentDto>, res: TResponse) => {
+  public handleComment = async (req: TRequest<AddArticleCommentDto>, res: TResponse) => {
     const { articleId, nickname, parentCommentId, comment } = req.dto as AddArticleCommentDto;
 
-    const article = await this.articlesHelper.articleDetails(articleId) as ArticlesEntity | null;
-    if (!article) return res.status(404).json({ error: l10n.t("ERR_ARTICLE_NOT_FOUND") });
-
     try {
-      const addCommentResult = await this.commentQueue.addCommentToArticle(articleId, nickname, parentCommentId, comment);
+      const article = await this.articlesHelper.articleDetails(articleId) as ArticlesEntity | null;
+      if (!article) return res.status(400).json({ error: l10n.t("ERR_ARTICLE_NOT_FOUND") });
+
+      if (parentCommentId) {
+        const parentComment = await this.commentsRepository.findOne({ where: { id: parentCommentId } });
+        if (!parentComment) return res.status(404).json({ error: l10n.t("ERR_COMMENT_ADDITION_FAILED"), message: l10n.t("ERR_PARENT_COMMENT_NOT_FOUND") });
+      }
+
+      // Add the job to the queue
+      const job = await myQueue.add(ECommentJobNames.AddComment, { articleId, nickname, parentCommentId, comment });
+
+      // Wait for the job to finish and retrieve the result
+      const addCommentResult = await job.waitUntilFinished(queueEvents);  // This will return the result of the job once it's completed
 
       return res.status(201).json({
         message: l10n.t("COMMENT_CREATED_SUCCESSFULLY"),
@@ -47,34 +57,16 @@ export class CommentsController extends BaseController {
     }
   };
 
-  public replyCommentToArticle = async (req: TRequest<ReplyArticleCommentDto>, res: TResponse) => {
-    const { nickname, parentCommentId, comment } = req.dto as ReplyArticleCommentDto;
-
-    const parentComment = await this.commentsRepository.findOne({ where: { id: parentCommentId } }) as CommentsEntity;
-    if (!parentComment) return res.status(404).json({ error: l10n.t("ERR_COMMENT_NOT_FOUND") });
-
-    try {
-      const replyCommentResult = await this.commentQueue.replyCommentToArticle(parentComment.articleId, nickname, parentCommentId, comment);
-
-      return res.status(201).json({
-        message: l10n.t("COMMENT_REPLIED_SUCCESSFULLY"),
-        data: replyCommentResult,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        message: l10n.t("ERR_FAILED_COMMENT_JOB"),
-        error: error.message,
-      });
-    }
-  };
-
+  // Method to get all comments for a specific article
   public getAllCommentsOnArticle = async (req: TRequest<GetCommentsOnArticleDto>, res: TResponse) => {
     const { articleId } = req.dto as GetCommentsOnArticleDto;
 
     const article = await this.articlesHelper.articleDetails(articleId) as ArticlesEntity | null;
-    if (!article) return res.status(404).json({ error: l10n.t("ERR_ARTICLE_NOT_FOUND") });
+    if (!article) {
+      return res.status(400).json({ error: l10n.t("ERR_ARTICLE_NOT_FOUND") });
+    }
 
-    const comments = await this.commentsRepository.find({ where: { articleId }, order: { createdAt: "DESC" } });
+    const comments = await this.commentsRepository.find({ where: { articleId }, order: { createdAt: "DESC", id: "DESC" } });
     return res.status(200).json({ comments });
-  }
+  };
 }

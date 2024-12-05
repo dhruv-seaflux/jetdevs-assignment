@@ -3,9 +3,9 @@ import { CommentsEntity } from './comments.entity';
 
 @Entity('articles')
 export class ArticlesEntity {
-    @PrimaryGeneratedColumn('increment', { type: 'bigint' })
+    @PrimaryGeneratedColumn()
     id: number;
-
+  
     @Column({ type: 'varchar', length: 255, nullable: false })
     nickname: string;
 

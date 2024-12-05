@@ -3,13 +3,13 @@ import { ArticlesEntity } from './articles.entity';
 
 @Entity('comments')
 export class CommentsEntity {
-    @PrimaryGeneratedColumn('increment', { type: 'bigint' })
+    @PrimaryGeneratedColumn()
     id: number;
-
-    @Column({ type: 'bigint', nullable: true })
+  
+    @Column({ type: 'integer', nullable: true })
     articleId: number | null;
 
-    @Column({ type: 'bigint', nullable: true })
+    @Column({ type: 'integer', nullable: true })
     parentCommentId: number | null;
 
     @Column({ type: 'varchar', length: 255, nullable: false })

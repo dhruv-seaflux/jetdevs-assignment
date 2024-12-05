@@ -1,7 +1,14 @@
-import { IsNotEmpty, IsNumber, IsOptional } from "class-validator";
-import { BaseArticleCommentDto } from "./base-article-comment.dto";
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
-export class AddArticleCommentDto extends BaseArticleCommentDto {
+export class AddArticleCommentDto {
+    @IsString()
+    @IsNotEmpty()
+    nickname: string;
+
+    @IsString()
+    @IsNotEmpty()
+    comment: string;
+
     @IsNumber()
     @IsNotEmpty()
     articleId: number;

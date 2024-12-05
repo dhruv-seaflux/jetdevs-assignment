@@ -6,7 +6,7 @@
     <!-- ChangeSet for Article Table -->
     <changeSet id="1" author="Dhruv Kapadi">
         <createTable tableName="articles">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="INTEGER" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="nickname" type="VARCHAR(255)">
@@ -28,13 +28,13 @@
     <!-- ChangeSet for Comment Table -->
     <changeSet id="2" author="Dhruv Kapadi">
         <createTable tableName="comments">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="INTEGER" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="articleId" type="BIGINT">
+            <column name="articleId" type="INTEGER">
                 <constraints nullable="true"/>
             </column>
-            <column name="parentCommentId" type="BIGINT">
+            <column name="parentCommentId" type="INTEGER">
                 <constraints nullable="true"/>
             </column>
             <column name="nickname" type="VARCHAR(255)">

@@ -39,7 +39,7 @@ export class CommentsWorker {
   }
 
   private commentsJob = async (job: Job) => {
-    if (job.name === ECommentJobNames.ADD_COMMENT) {
+    if (job.name === ECommentJobNames.AddComment) {
       const result = await this.addComment(job);
       return result; // Return the processed data
     }

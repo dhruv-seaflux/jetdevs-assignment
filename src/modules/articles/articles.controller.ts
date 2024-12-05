@@ -4,7 +4,7 @@ import { TRequest, TResponse } from "@types";
 import { BaseController } from "@modules/base.controller";
 import { InitRepository, InjectRepositories } from "@helpers";
 import { ArticlesEntity } from "@entities";
-import { GetAllArticlesDto, CreateArticleDto, GetArticleContentDto } from "./dto";
+import { CreateArticleDto, GetArticleContentDto } from "./dto";
 
 export class ArticlesController extends BaseController {
   @InitRepository(ArticlesEntity)
@@ -16,14 +16,19 @@ export class ArticlesController extends BaseController {
   }
 
   public createArticles = async (req: TRequest<CreateArticleDto>, res: TResponse) => {
-    const { content, nickname, title } = req.dto as CreateArticleDto;
+    try {
+      const { content, nickname, title } = req.dto as CreateArticleDto;
 
-    const insertData = await this.articlesRepository.save({ content, nickname, title });
-    return res.status(201).json({ message: l10n.t("SUCCESS"), data: insertData });
+      const insertData = await this.articlesRepository.save({ content, nickname, title });
+      return res.status(201).json({ message: l10n.t("SUCCESS"), data: insertData });
+
+    } catch (error) {
+      return res.status(500).json({ error: l10n.t("SOMETHING_WENT_WRONG"), message: error.message });
+    }
   }
 
-  public getAllArticles = async (req: TRequest<GetAllArticlesDto>, res: TResponse) => {
-    const { page, limit } = req.dto as GetAllArticlesDto;
+  public getAllArticles = async (req: TRequest, res: TResponse) => {
+    const { page, limit } = req.pager;
 
     const pageCount = Number(page) || 1;
     const limitCount = Number(limit) || 20;
@@ -37,7 +42,7 @@ export class ArticlesController extends BaseController {
     const { articleId } = req.dto as GetArticleContentDto;
 
     const article = await this.articlesRepository.findOne({ where: { id: articleId }, select: ["content"] }) as Partial<ArticlesEntity>;
-    if (!article) return res.status(404).json({ message: l10n.t("ARTICLE_NOT_FOUND") });
+    if (!article) return res.status(404).json({ message: l10n.t("ERR_ARTICLE_NOT_FOUND") });
 
     return res.status(200).json({ content: article.content });
   }
