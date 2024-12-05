@@ -3,6 +3,60 @@
     xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
     xmlns:pro="http://www.liquibase.org/xml/ns/pro"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-     <changeSet author="author_name" id="1">
+    <!-- ChangeSet for Article Table -->
+    <changeSet id="1" author="Dhruv Kapadi">
+        <createTable tableName="articles">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nickname" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- ChangeSet for Comment Table -->
+    <changeSet id="2" author="Dhruv Kapadi">
+        <createTable tableName="comments">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="article_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="parent_comment_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="nickname" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+            baseTableName="comments"
+            baseColumnNames="article_id"
+            referencedTableName="articles"
+            referencedColumnNames="id"
+            constraintName="fk_comment_article"/>
+        <addForeignKeyConstraint
+            baseTableName="comments"
+            baseColumnNames="parent_comment_id"
+            referencedTableName="comments"
+            referencedColumnNames="id"
+            constraintName="fk_comment_comment"/>
     </changeSet>
 </databaseChangeLog>
