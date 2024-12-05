@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, OneToMany, JoinColumn, } from 'typeorm';
-import { ArticleEntity } from './articles.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, OneToMany, JoinColumn, UpdateDateColumn, } from 'typeorm';
+import { ArticlesEntity } from './articles.entity';
 
 @Entity('comments')
 export class CommentEntity {
@@ -18,12 +18,15 @@ export class CommentEntity {
     @Column({ type: 'text', nullable: false })
     content: string;
 
-    @CreateDateColumn({ type: 'timestamp' })
-    creationDate: Date;
-
-    @ManyToOne(() => ArticleEntity, article => article.comments, { nullable: true, onDelete: 'CASCADE' })
+    @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    createdAt?: Date;
+  
+    @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    updatedAt?: Date;
+  
+    @ManyToOne(() => ArticlesEntity, article => article.comments, { nullable: true, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'article_id' })
-    article: ArticleEntity;
+    article: ArticlesEntity;
 
     @ManyToOne(() => CommentEntity, comment => comment.childComments, { nullable: true, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'parent_comment_id' })
