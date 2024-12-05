@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, On
 import { ArticlesEntity } from './articles.entity';
 
 @Entity('comments')
-export class CommentEntity {
+export class CommentsEntity {
     @PrimaryGeneratedColumn('increment', { type: 'bigint' })
     id: number;
 
@@ -20,18 +20,18 @@ export class CommentEntity {
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt?: Date;
-  
+
     @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     updatedAt?: Date;
-  
+
     @ManyToOne(() => ArticlesEntity, article => article.comments, { nullable: true, onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'article_id' })
+    @JoinColumn({ name: 'articleId' })
     article: ArticlesEntity;
 
-    @ManyToOne(() => CommentEntity, comment => comment.childComments, { nullable: true, onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'parent_comment_id' })
-    parentComment: CommentEntity;
+    @ManyToOne(() => CommentsEntity, comment => comment.childComments, { nullable: true, onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'parentCommentId' })
+    parentComment: CommentsEntity;
 
-    @OneToMany(() => CommentEntity, comment => comment.parentComment)
-    childComments: CommentEntity[];
+    @OneToMany(() => CommentsEntity, comment => comment.parentComment)
+    childComments: CommentsEntity[];
 }

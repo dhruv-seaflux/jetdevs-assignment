@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, UpdateDateColumn, } from 'typeorm';
-import { CommentEntity } from './comments.entity';
+import { CommentsEntity } from './comments.entity';
 
 @Entity('articles')
 export class ArticlesEntity {
@@ -17,10 +17,10 @@ export class ArticlesEntity {
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt?: Date;
-  
+
     @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     updatedAt?: Date;
-  
-    @OneToMany(() => CommentEntity, comment => comment.article)
-    comments: CommentEntity[];
+
+    @OneToMany(() => CommentsEntity, comment => comment.article)
+    comments: CommentsEntity[];
 }

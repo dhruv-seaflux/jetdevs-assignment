@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import { Log } from "@helpers";
 import app from "./server";
+import './workers'; // This will initialize all workers
 
 dotenv.config();
 const { PORT } = process.env;

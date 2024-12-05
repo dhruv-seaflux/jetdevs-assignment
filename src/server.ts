@@ -11,7 +11,7 @@ import { env } from "@configs";
 import { destructPager } from "middlewares";
 import { Cors, EnvValidator, HandleUnhandledPromise, Log } from "@helpers";
 import "reflect-metadata";
-import { ArticlesEntity, CommentEntity } from "@entities";
+import { ArticlesEntity, CommentsEntity } from "@entities";
 import Routes from "./routes";
 
 dotenv.config();
@@ -30,7 +30,7 @@ class App {
       username: env.dbUser,
       password: env.dbPassword,
       database: env.dbName,
-      entities: [ArticlesEntity, CommentEntity],
+      entities: [ArticlesEntity, CommentsEntity],
     });
 
     // Handle Unhandled Promise Rejections

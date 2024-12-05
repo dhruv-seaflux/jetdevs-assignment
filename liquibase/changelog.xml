@@ -31,10 +31,10 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="article_id" type="BIGINT">
+            <column name="articleId" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
-            <column name="parent_comment_id" type="BIGINT">
+            <column name="parentCommentId" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
             <column name="nickname" type="VARCHAR(255)">
@@ -50,13 +50,13 @@
         </createTable>
         <addForeignKeyConstraint
             baseTableName="comments"
-            baseColumnNames="article_id"
+            baseColumnNames="articleId"
             referencedTableName="articles"
             referencedColumnNames="id"
             constraintName="fk_comment_article"/>
         <addForeignKeyConstraint
             baseTableName="comments"
-            baseColumnNames="parent_comment_id"
+            baseColumnNames="parentCommentId"
             referencedTableName="comments"
             referencedColumnNames="id"
             constraintName="fk_comment_comment"/>

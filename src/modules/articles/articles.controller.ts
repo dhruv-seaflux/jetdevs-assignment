@@ -19,7 +19,7 @@ export class ArticlesController extends BaseController {
     const { content, nickname, title } = req.dto as CreateArticleDto;
 
     const insertData = await this.articlesRepository.save({ content, nickname, title });
-    return res.status(200).json({ message: l10n.t("SUCCESS"), data: insertData });
+    return res.status(201).json({ message: l10n.t("SUCCESS"), data: insertData });
   }
 
   public getAllArticles = async (req: TRequest<GetAllArticlesDto>, res: TResponse) => {
