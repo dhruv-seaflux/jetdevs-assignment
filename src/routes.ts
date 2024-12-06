@@ -6,7 +6,7 @@ import * as l10n from "jm-ez-l10n";
 export default class Routes {
   public configure() {
     const router = Router();
-    router.get("/hc", (_, res) => res.status(200).json({ message: "OK" }))
+    router.get("/health-check", (_, res) => res.status(200).json({ message: "OK" }))
     router.use("/articles", new ArticlesRouter().router);
     router.use("/comments", new CommentsRouter().router);
     

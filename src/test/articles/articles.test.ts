@@ -8,7 +8,7 @@ const { expect } = chai;
 
 App.init();
 
-describe("Authentication Module", () => {
+describe("Articles Module", () => {
   let newArticleId: number;
 
   it("1. It should create an article, as all parameters required are provided", async () => {
