@@ -30,6 +30,15 @@ class Env {
   @IsNotEmpty()
   @IsIn(Constants.ENVIRONMENTS)
   public nodeEnv: string;
+
+  @IsNotEmpty()
+  @IsString()
+  public redisHost: string;
+
+  @IsInt()
+  @Min(2000)
+  @Max(9999)
+  public redisPort: number;
 }
 
 export const env = new Env();
@@ -41,3 +50,5 @@ env.dbPort = +(process.env.DB_PORT || 3306);
 env.dbPassword = process.env.DB_PASSWORD;
 env.port = +process.env.PORT;
 env.nodeEnv = process.env.NODE_ENV;
+env.redisHost = process.env.REDIS_HOST;
+env.redisPort = +process.env.REDIS_PORT;
