@@ -5,8 +5,7 @@ import { BaseController } from "@modules/base.controller";
 import { InitRepository, InjectCls, InjectRepositories } from "@helpers";
 import { ArticlesEntity, CommentsEntity } from "@entities";
 import { ArticlesHelper } from "@modules/articles/helpers/articles.helper";
-import { myQueue, queueEvents } from "@configs";
-import { CommentQueue } from "./queues/comments.queue";
+import { commentQueue, queueEvents } from "@configs";
 import { AddArticleCommentDto, GetCommentsOnArticleDto } from "./dto";
 
 export class CommentsController extends BaseController {
@@ -15,9 +14,6 @@ export class CommentsController extends BaseController {
 
   @InitRepository(CommentsEntity)
   commentsRepository: Repository<CommentsEntity>;
-
-  @InjectCls(CommentQueue)
-  private commentQueue: CommentQueue;
 
   @InjectCls(ArticlesHelper)
   private articlesHelper: ArticlesHelper;
@@ -40,7 +36,7 @@ export class CommentsController extends BaseController {
       }
 
       // Add the job to the queue
-      const job = await myQueue.add(ECommentJobNames.AddComment, { articleId, nickname, parentCommentId, comment });
+      const job = await commentQueue.add(ECommentJobNames.AddComment, { articleId, nickname, parentCommentId, comment });
 
       // Wait for the job to finish and retrieve the result
       const addCommentResult = await job.waitUntilFinished(queueEvents);  // This will return the result of the job once it's completed

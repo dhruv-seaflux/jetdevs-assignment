@@ -9,13 +9,18 @@ const logger = Log.getLogger();
 
 const connection = {
   host: env.redisHost,
-  port: Number(env.redisPort) || 6379,
+  port: env.redisPort
 };
 
-const myQueue = new Queue('myQueue', { connection });
+export enum EQueue {
+  Comment = "Comment"
+}
+
+// Create Queue instance
+const commentQueue = new Queue(EQueue.Comment, { connection });
 
 // Create QueueEvents instance
-const queueEvents = new QueueEvents('myQueue', { connection });
+const queueEvents = new QueueEvents(EQueue.Comment, { connection });
 
 // Process the job
 const processJob = async (job: Job): Promise<any> => {
@@ -35,7 +40,7 @@ const processJob = async (job: Job): Promise<any> => {
 };
 
 const worker = new Worker(
-  'myQueue',
+  EQueue.Comment,
   async (job: Job) => {
     logger.info(`Processing job ${job.id}`);
 
@@ -45,4 +50,4 @@ const worker = new Worker(
   { connection }
 );
 
-export { myQueue, worker, queueEvents };
+export { commentQueue, worker, queueEvents };
