@@ -14,5 +14,6 @@
   "ERR_FAILED_COMMENT_JOB": "Failed to comment on article",
   "COMMENTS_FETCHED_SUCCESSFULLY": "Comments fetched successfully",
   "ERR_COMMENT_ADDITION_FAILED": "Failed to add comment",
-  "ERR_PARENT_COMMENT_NOT_FOUND": "Parent comment not found"
+  "ERR_PARENT_COMMENT_NOT_FOUND": "Parent comment not found",
+  "COMMENT_CREATED_SUCCESSFULLY": "Comment created successfully"
 }

@@ -6,28 +6,23 @@ import helmet from "helmet";
 import morgan from "morgan";
 import methodOverride from "method-override";
 import * as l10n from "jm-ez-l10n";
-import { DB } from "configs/db";
-import { env } from "@configs";
-import { destructPager } from "middlewares";
+import { ArticlesEntity, CommentsEntity } from "@entities";
+import { DB, env } from "@configs";
+import { destructPager } from "@middlewares";
 import { Cors, EnvValidator, HandleUnhandledPromise, Log } from "@helpers";
 import "reflect-metadata";
-import { ArticlesEntity, CommentsEntity } from "@entities";
 import Routes from "./routes";
 
 dotenv.config();
 
 class App {
-  public app: express.Application;
+  protected app: express.Application;
 
   private logger = Log.getLogger();
 
-  constructor() {
-    this.app = express();
-  }
-
-  public async init() {
-    // Initialize database
-    await DB.init({
+  public init() {
+    // init DB.
+    DB.init({
       type: "mysql",
       host: env.dbHost,
       port: 3307,
@@ -42,6 +37,9 @@ class App {
 
     // Validate ENV file
     EnvValidator.validate(env);
+
+    // Init Express
+    this.app = express();
 
     // Security
     Cors.enable(this.app);
@@ -58,23 +56,24 @@ class App {
 
     // Body Parsing
     this.app.use(json({ limit: "50mb" }));
-    this.app.use(urlencoded({ extended: true }));
+    this.app.use(urlencoded({ extended: true })); // parse application/x-www-form-urlencoded
 
-    // Destruct Pager
+    // Destruct Pager from query string and typecast to numbers
     this.app.use(destructPager);
 
     // Routing
     const routes = new Routes();
     this.app.use("/", routes.configure());
 
-    this.app.listen(env.port, () => {
-      this.logger.info(`The server is running on http://localhost:${env.port}`);
+    // Start server
+    this.app.listen(process.env.PORT, () => {
+      this.logger.info(`The server is running in port localhost: ${process.env.PORT}`);
     });
   }
 
-  public getApp(): express.Application {
+  public getExpressApp() {
     return this.app;
   }
 }
 
-export default new App();
+export default new App;

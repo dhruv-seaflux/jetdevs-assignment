@@ -47,7 +47,7 @@ export class CommentsController extends BaseController {
 
       return res.status(201).json({
         message: l10n.t("COMMENT_CREATED_SUCCESSFULLY"),
-        data: addCommentResult,
+        data: addCommentResult.data,
       });
     } catch (error) {
       return res.status(500).json({
