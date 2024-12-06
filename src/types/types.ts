@@ -16,6 +16,10 @@ export interface TRequest<T = any> extends Request {
   };
 }
 
-export interface TResponse extends Response {}
+export interface TResponse extends Response { }
 
-export enum Roles {}
+export enum Roles { }
+
+export enum EQueue {
+  Comment = "Comment"
+}

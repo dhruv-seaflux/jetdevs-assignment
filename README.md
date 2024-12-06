@@ -4,10 +4,10 @@
 
 | **Package** | **Version** |
 | ----------- | ----------- |
-| Node        | v18.16.0    |
+| Node        | v18.20.0    |
 | Yarn        | 1.22.x      |
-| Postgres    | 14.0        |
 | Liquibase   | 4.17.0      |
+| BullMQ      | 5.31.1      |
 
 ## Development Environment Setup
 
@@ -33,25 +33,28 @@ yarn # to install dependencies
 - Update `liquibase.properties` file for DB credentials
 - Run migrations for your local DB using `yarn liquibase`
 
-## Middleware
-
-### acl
-
-- It is utilized to verify user permissions.
-
-### auth
-
-- It verifies the validity of authentication tokens.
-- It checks whether the user exists in the database or not.
-
-## Types
-
-- type.ts: This file is used for managing data types within the application.
-- misc.ts: In this file, we manage and store enumerations (enums). These enums are shared with the frontend via the misc module, facilitating consistency in enum values between both the frontend and backend components.
-
 
 ### Database
-- There is a docker compose file available for running a local database or to use as automated testing. 
-- In test-config/start-db.js file, the configuration for the following is written
-1. Starting a local postgres Database.
-2. Using Liquibase to run change sets in that particular database.
+- There is a docker compose file available for running a database container 
+```
+docker-compose up -d
+```
+- There is a docker compose file available for running redis container 
+```
+docker-compose -f docker-compose.redis.yaml up -d
+```
+
+The container for redis is required as the messaging queue integrated in this app is **BullMQ**.
+
+## Postman Collection
+At the root path there is a folder name `postman-collection` that contains postman collection to test the API.
+
+File name : `JETDEVS - Assignment.postman_collection.json`
+
+## Important Commands
+| **command** | **UseCase** |
+| ----------- | ----------- |
+| yarn start        | To start a local express server of current app    |
+| yarn build        | To create a build of current app                  |
+| yarn test         | To run the test cases of current app              |
+

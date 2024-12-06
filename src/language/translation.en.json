@@ -5,5 +5,16 @@
   "RESET_PASSWORD_LINK": "Reset password link sent in email, check it",
   "PASSWORD_UPDATE": "Password updated successfully.",
   "2FA_SENT": "Two-Factor Authentication has been sent successfully.",
-  "2FA_VERIFY": "Two-Factor Authentication verify successfully."
+  "2FA_VERIFY": "Two-Factor Authentication verify successfully.",
+  "SUCCESS": "SUCCESS",
+  "ARTICLE_NOT_FOUND": "Article not found",
+  "ERR_COMMENT_NOT_FOUND": "Comment not found",
+  "COMMENT_ADDED_SUCCESSFULLY": "Comment added successfully",
+  "COMMENT_REPLIED_SUCCESSFULLY": "Comment replied successfully",
+  "ERR_FAILED_COMMENT_JOB": "Failed to comment on article",
+  "COMMENTS_FETCHED_SUCCESSFULLY": "Comments fetched successfully",
+  "ERR_COMMENT_ADDITION_FAILED": "Failed to add comment",
+  "ERR_PARENT_COMMENT_NOT_FOUND": "Parent comment not found",
+  "COMMENT_CREATED_SUCCESSFULLY": "Comment created successfully",
+  "ERR_ARTICLE_NOT_FOUND": "Article not found"
 }

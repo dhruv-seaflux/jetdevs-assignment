@@ -6,21 +6,22 @@ import helmet from "helmet";
 import morgan from "morgan";
 import methodOverride from "method-override";
 import * as l10n from "jm-ez-l10n";
-import { DB } from "configs/db";
-import { env } from "@configs";
-import { destructPager } from "middlewares";
+import { ArticlesEntity, CommentsEntity } from "@entities";
+import { DB, env } from "@configs";
+import { destructPager } from "@middlewares";
 import { Cors, EnvValidator, HandleUnhandledPromise, Log } from "@helpers";
 import "reflect-metadata";
+import { QueueWorker } from "configs/queue/worker";
 import Routes from "./routes";
 
 dotenv.config();
 
 class App {
-  public app: express.Application;
+  protected app: express.Application;
 
   private logger = Log.getLogger();
 
-  constructor() {
+  public init() {
     // init DB.
     DB.init({
       type: "mysql",
@@ -29,7 +30,7 @@ class App {
       username: env.dbUser,
       password: env.dbPassword,
       database: env.dbName,
-      entities: [],
+      entities: [ArticlesEntity, CommentsEntity],
     });
 
     // Handle Unhandled Promise Rejections
@@ -65,12 +66,31 @@ class App {
     const routes = new Routes();
     this.app.use("/", routes.configure());
 
+    // Start server
+    this.app.listen(process.env.PORT, () => {
+      // Initialize the worker
+      const commentWorker = new QueueWorker();
+
+      // Graceful shutdown of queue worker
+      process.on("SIGINT", async () => {
+        this.logger.info("Shutting down...");
+        await commentWorker.shutdown();
+        process.exit(0);
+      });
+
+      process.on("SIGTERM", async () => {
+        this.logger.info("Shutting down...");
+        await commentWorker.shutdown();
+        process.exit(0);
+      });
+
+      this.logger.info(`The server is running in port localhost: ${process.env.PORT}`);
+    });
   }
 
-  public getExpresApp() {
+  public getExpressApp() {
     return this.app;
   }
-
 }
 
-export default new App().app;
+export default new App;
