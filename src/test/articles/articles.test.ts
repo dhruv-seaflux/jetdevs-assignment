@@ -43,5 +43,12 @@ describe("Articles Module", () => {
     expect(response.status).to.equal(200);
     expect(response.body.content).to.equal(Constants.ARTICLE_DATA.content);
   });
+
+  it("5. It should not get article data, as article not present ", async () => {
+    const response = await request(App.getExpressApp()).get(`/articles/content/9999`);
+
+    expect(response.status).to.equal(400);
+    expect(response.body.message).to.equal(l10n.t("ERR_ARTICLE_NOT_FOUND"));
+  });
 });
 

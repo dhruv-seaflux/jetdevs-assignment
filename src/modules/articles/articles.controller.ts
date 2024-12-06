@@ -42,8 +42,8 @@ export class ArticlesController extends BaseController {
     const { articleId } = req.dto as GetArticleContentDto;
 
     const article = await this.articlesRepository.findOne({ where: { id: articleId }, select: ["content"] }) as Partial<ArticlesEntity>;
-    if (!article) return res.status(404).json({ message: l10n.t("ERR_ARTICLE_NOT_FOUND") });
+    if (!article) return res.status(400).json({ message: l10n.t("ERR_ARTICLE_NOT_FOUND") });
 
     return res.status(200).json({ content: article.content });
   }
-}
+} 
