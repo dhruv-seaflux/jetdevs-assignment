@@ -11,6 +11,7 @@ import { DB, env } from "@configs";
 import { destructPager } from "@middlewares";
 import { Cors, EnvValidator, HandleUnhandledPromise, Log } from "@helpers";
 import "reflect-metadata";
+import { QueueWorker } from "configs/queue/worker";
 import Routes from "./routes";
 
 dotenv.config();
@@ -67,6 +68,22 @@ class App {
 
     // Start server
     this.app.listen(process.env.PORT, () => {
+      // Initialize the worker
+      const commentWorker = new QueueWorker();
+
+      // Graceful shutdown of queue worker
+      process.on("SIGINT", async () => {
+        this.logger.info("Shutting down...");
+        await commentWorker.shutdown();
+        process.exit(0);
+      });
+
+      process.on("SIGTERM", async () => {
+        this.logger.info("Shutting down...");
+        await commentWorker.shutdown();
+        process.exit(0);
+      });
+
       this.logger.info(`The server is running in port localhost: ${process.env.PORT}`);
     });
   }

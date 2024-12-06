@@ -2,13 +2,16 @@ import { Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
 import { ECommentJobNames, TRequest, TResponse } from "@types";
 import { BaseController } from "@modules/base.controller";
-import { InitRepository, InjectCls, InjectRepositories } from "@helpers";
+import { InitRepository, InjectCls, InjectRepositories, Log } from "@helpers";
 import { ArticlesEntity, CommentsEntity } from "@entities";
 import { ArticlesHelper } from "@modules/articles/helpers/articles.helper";
-import { commentQueue, queueEvents } from "@configs";
+import { commentQueue, queueEvents } from "configs/queue/queue";
+import path from "path";
 import { AddArticleCommentDto, GetCommentsOnArticleDto } from "./dto";
 
 export class CommentsController extends BaseController {
+  public logger = Log.getLogger(`${path.relative(process.cwd(), __dirname)}/${this.constructor.name}`);
+
   @InitRepository(ArticlesEntity)
   articlesRepository: Repository<ArticlesEntity>;
 
@@ -37,6 +40,7 @@ export class CommentsController extends BaseController {
 
       // Add the job to the queue
       const job = await commentQueue.add(ECommentJobNames.AddComment, { articleId, nickname, parentCommentId, comment });
+      this.logger.info(`Comment job added to the queue. Job ID: ${job.id}`);
 
       // Wait for the job to finish and retrieve the result
       const addCommentResult = await job.waitUntilFinished(queueEvents);  // This will return the result of the job once it's completed

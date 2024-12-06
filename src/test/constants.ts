@@ -3,8 +3,8 @@ export class Constants {
       title: "Today's news",
       description: "news description",
       content: "news content",
-      nickname: "news author"
-    };
+      nickname: "newsauther_test"
+    }
 
     public static readonly ERROR_ARTICLE_DATA = {
       title: "title",
